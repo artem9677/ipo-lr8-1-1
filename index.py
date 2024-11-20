@@ -1,12 +1,16 @@
-#func
-
 import json 
 
 with open("fish.json", 'r', encoding='utf-8') as file: 
     data = json.load(file) 
 
+num = 0
 count = 0 
-open = True
+is_open = True
+
+for fish in data:
+    num+=1
+
+num+=1
 
 def menu():
     print("""
@@ -51,24 +55,18 @@ def index():
 
 
 def new():
+    global num
     global count
-    id = int(input("Введите номер рыбы: "))    
-    exists = False
-    for fish in data:
-        if fish['id'] == id:
-            exists = True
-            break
-        
-    if exists:
-        print("Такой номер уже существует.")
-    else:
-        name = input("Введите название: ")  
-        latin_name = input("Введите латинское название: ")  
-        is_salt_water_fish = input("Введите, пресноводная ли рыба (да/нет): ")  
-        sub_type_count = float(input("Введите кол-во подвидов: "))  
-
+    flag = True
+    name = input("Введите название: ")  
+    latin_name = input("Введите латинское название: ")  
+    is_salt_water_fish = input("Введите, пресноводная ли рыба (да/нет): ")  
+    sub_type_count = input("Введите кол-во подвидов: ")
+    try:
+        sub_type_count = int(sub_type_count)
+        flag = False
         new_fish = {
-            'id': id,
+            'id': num,
             'name': name,
             'latin_name': latin_name,
             'is_salt_water_fish': True if is_salt_water_fish.lower() == 'да' else False, 
@@ -78,7 +76,13 @@ def new():
         data.append(new_fish) 
         with open("fish.json", 'w', encoding='utf-8') as out_file: 
             json.dump(data, out_file)
-        print("Машина успешно добавлена.")
+        print("Рыба успешно добавлена.")
+        num+=1
+        
+    except:
+            if flag :
+                print("Значение введено неверно.")
+        
     count += 1
 
 def del_id():
@@ -98,17 +102,17 @@ def del_id():
         with open("fish.json", 'w', encoding='utf-8') as out_file:
             json.dump(data, out_file)
         print("Запись успешно удалена.")
-    count += 1
+    count += 1    
 
 def exit():
     global count
-    global open
+    global is_open
     print(f"""Программа завершена.
             Кол-во операций: {count}""")
-    open = False
+    is_open = False
         
 def main():
-    while open:
+    while is_open:
         menu()
 
         num = int(input("Введите номер действия: "))
